@@ -1,1 +1,1 @@
-# Fine-tuning_Meta-Llama-3-8B_for_French_to_Wolof
+Fine-tuning_facebook-nllb-200-distilled-600M_French_to_Wolof
