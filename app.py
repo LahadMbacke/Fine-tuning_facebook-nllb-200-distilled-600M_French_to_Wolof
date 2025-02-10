@@ -1,6 +1,6 @@
 #%%
 from datasets import load_dataset
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, Seq2SeqTrainingArguments, Seq2SeqTrainer, DataCollatorForSeq2Seq
 
 # Chargement du dataset
 dataset = load_dataset("galsenai/centralized_wolof_french_translation_data")
@@ -69,4 +69,32 @@ split_datasets = tokenized_datasets["train"].train_test_split(test_size=0.2, see
 train_dataset = split_datasets["train"]
 eval_dataset = split_datasets["test"]
 train_dataset
+#%%
+
+training_args = Seq2SeqTrainingArguments(
+    output_dir="./results_nllb_finetuned",
+    evaluation_strategy="epoch",
+    learning_rate=2e-5,
+    per_device_train_batch_size=8,
+    per_device_eval_batch_size=8,
+    weight_decay=0.01,
+    save_total_limit=3,
+    num_train_epochs=3,
+    predict_with_generate=True,
+    fp16=True,
+)
+
+data_collator = DataCollatorForSeq2Seq(tokenizer, model=model)
+
+# CTrainer
+trainer = Seq2SeqTrainer(
+    model=model,
+    args=training_args,
+    train_dataset=train_dataset,
+    eval_dataset=eval_dataset, 
+    tokenizer=tokenizer,
+    data_collator=data_collator,
+)
+
+trainer.train()
 #%%
