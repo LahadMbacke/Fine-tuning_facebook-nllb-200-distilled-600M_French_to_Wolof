@@ -64,3 +64,9 @@ tokenized_datasets = dataset.map(
     batched=True,
 )
 #%%
+split_datasets = tokenized_datasets["train"].train_test_split(test_size=0.2, seed=42)
+
+train_dataset = split_datasets["train"]
+eval_dataset = split_datasets["test"]
+train_dataset
+#%%
